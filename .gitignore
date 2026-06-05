@@ -1,0 +1,27 @@
+# Environment
+.env
+*.env
+
+# Downloaded SEC filings and generated artifacts (rebuild with: python src/ingest.py)
+data/sec-filings/
+data/metrics/
+
+# ChromaDB vector index (binary, large — rebuild with: python src/indexer.py)
+data/index/
+
+# Evaluation output
+evaluation/results.json
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.chroma/
+
+# Virtual environments
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db

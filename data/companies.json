@@ -1,0 +1,27 @@
+{
+  "MSFT": {
+    "name": "Microsoft",
+    "cik": "CIK0000789019",
+    "revenue_concept": "RevenueFromContractWithCustomerExcludingAssessedTax"
+  },
+  "GOOGL": {
+    "name": "Alphabet",
+    "cik": "CIK0001652044",
+    "revenue_concept": "Revenues"
+  },
+  "META": {
+    "name": "Meta",
+    "cik": "CIK0001326801",
+    "revenue_concept": "RevenueFromContractWithCustomerExcludingAssessedTax"
+  },
+  "AAPL": {
+    "name": "Apple Inc.",
+    "cik": "CIK0000320193",
+    "revenue_concept": "RevenueFromContractWithCustomerExcludingAssessedTax"
+  },
+  "NVDA": {
+    "name": "NVIDIA CORP",
+    "cik": "CIK0001045810",
+    "revenue_concept": "RevenueFromContractWithCustomerExcludingAssessedTax"
+  }
+}

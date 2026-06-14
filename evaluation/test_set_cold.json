@@ -1,0 +1,108 @@
+[
+  {
+    "id": "X01",
+    "category": "factual",
+    "question": "What were Alphabet's total revenues in fiscal year 2024?",
+    "expected_answer": "$350,018 million (approximately $350 billion)",
+    "source": "GOOGL/10-K/2024-12-31.json",
+    "section": "income_statement",
+    "notes": "Verified from income statement. Randomly sampled; 2024 GOOGL not used in v3 (which used 2023)."
+  },
+  {
+    "id": "X02",
+    "category": "factual",
+    "question": "What was Apple's total net sales in fiscal year 2022?",
+    "expected_answer": "$394,328 million (approximately $394.3 billion)",
+    "source": "AAPL/10-K/2022-09-24.json",
+    "section": "income_statement",
+    "notes": "Verified from income statement. FY2022 AAPL — neither test set used this year."
+  },
+  {
+    "id": "X03",
+    "category": "factual",
+    "question": "What was Apple's total net sales in the quarter ended June 28, 2025?",
+    "expected_answer": "$94,036 million (approximately $94.0 billion)",
+    "source": "AAPL/10-Q/2025-06-28.json",
+    "section": "income_statement",
+    "notes": "Verified. Q3 FY2025 — a quarter not used in either test set."
+  },
+  {
+    "id": "X04",
+    "category": "factual",
+    "question": "What was NVIDIA's Data Center segment revenue in the quarter ended July 31, 2022?",
+    "expected_answer": "$3,806 million (approximately $3.8 billion)",
+    "source": "NVDA/10-Q/2022-07-31.json",
+    "section": "income_statement",
+    "notes": "Verified from segment revenue table. Q2 FY2023 — stresses quarterly period mapping on a year not tuned on."
+  },
+  {
+    "id": "X05",
+    "category": "factual",
+    "question": "What were NVIDIA's total assets as of October 28, 2018?",
+    "expected_answer": "$13,657 million (approximately $13.7 billion)",
+    "source": "NVDA/10-Q/2018-10-28.json",
+    "section": "balance_sheet",
+    "notes": "Verified from balance sheet. An old (2018) filing — stresses retrieval far from the tuned years."
+  },
+  {
+    "id": "X06",
+    "category": "factual",
+    "question": "What was NVIDIA's gross profit in the quarter ended July 30, 2017?",
+    "expected_answer": "$1,302 million (approximately $1.3 billion)",
+    "source": "NVDA/10-Q/2017-07-30.json",
+    "section": "income_statement",
+    "notes": "Verified from income statement. A 2017 filing — stresses period mapping on an old quarter."
+  },
+  {
+    "id": "X07",
+    "category": "factual",
+    "question": "How much did Microsoft hold in cash, cash equivalents, and short-term investments combined as of December 31, 2025?",
+    "expected_answer": "$89,462 million (approximately $89.5 billion); cash and cash equivalents alone were $24,296 million",
+    "source": "MSFT/10-Q/2025-12-31.json",
+    "section": "balance_sheet",
+    "notes": "Verified from balance sheet. Most recent MSFT quarter; tests a combined-line balance-sheet figure."
+  },
+  {
+    "id": "X08",
+    "category": "factual",
+    "question": "What was Meta's share-based compensation expense for the nine months ended September 30, 2024?",
+    "expected_answer": "$12,428 million (approximately $12.4 billion)",
+    "source": "META/10-Q/2024-09-30.json",
+    "section": "cash_flow_statement",
+    "notes": "Verified from cash flow statement (YTD figure). Tests a specific cash-flow line item."
+  },
+  {
+    "id": "X09",
+    "category": "factual",
+    "question": "What was Microsoft's net income in fiscal year 2023?",
+    "expected_answer": "$72,361 million (approximately $72.4 billion)",
+    "source": "MSFT/10-K/2023-06-30.json",
+    "section": "income_statement",
+    "notes": "Verified. FY2023 MSFT net income — a figure neither test set asked for."
+  },
+  {
+    "id": "X10",
+    "category": "analytical",
+    "question": "How did Alphabet's total revenue change from 2023 to 2024?",
+    "expected_answer": "It grew from $307,394 million in 2023 to $350,018 million in 2024 — an increase of about $42.6 billion, or roughly 14%",
+    "source": "GOOGL/10-K/2024-12-31.json",
+    "section": "income_statement",
+    "notes": "Verified from the 2024 10-K (which shows both years). Multi-year comparison on the newest GOOGL filing."
+  },
+  {
+    "id": "X11",
+    "category": "unanswerable",
+    "question": "What was NVIDIA's total revenue in fiscal year 1995?",
+    "expected_answer": "REFUSE — earliest indexed NVIDIA filings are from around 1999, so 1995 is outside the data range",
+    "source": null,
+    "notes": "In-corpus company but year before earliest filing. Tests the year-range gap message (not a generic refusal)."
+  },
+  {
+    "id": "X12",
+    "category": "unanswerable",
+    "question": "What was Oracle's cloud revenue in fiscal year 2024?",
+    "expected_answer": "REFUSE — Oracle is not in the indexed corpus",
+    "source": null,
+    "notes": "Out-of-corpus company. Should refuse and note Oracle is unavailable."
+  }
+]

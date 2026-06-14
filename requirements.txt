@@ -11,8 +11,9 @@ langchain-chroma>=0.1.4
 chromadb>=0.5.5
 anthropic>=0.34.0
 
-# Embeddings (local, free — no extra API key needed)
+# Embeddings & reranking (local, free — no extra API key needed)
 sentence-transformers>=3.0.1
+rank-bm25>=0.2.2
 
 # Data & metrics
 pandas>=2.0.0

@@ -1,0 +1,217 @@
+[
+  {
+    "id": "X01",
+    "category": "factual",
+    "question": "What were Alphabet's total revenues in fiscal year 2024?",
+    "expected": "$350,018 million (approximately $350 billion)",
+    "actual": "According to Alphabet Inc.'s 2024 10-K filing, total revenues in fiscal year 2024 were **$350,018 million** (or $350.018 billion) [1][2].",
+    "sources": [
+      "GOOGL/10-K/2024-12-31.json",
+      "GOOGL/10-K/2024-12-31.json",
+      "GOOGL/10-K/2024-12-31.json",
+      "GOOGL/10-K/2024-12-31.json",
+      "GOOGL/10-K/2024-12-31.json"
+    ],
+    "rewritten_query": "Alphabet GOOGL total revenues fiscal year 2024",
+    "is_grounded": true,
+    "elapsed_s": 4.8,
+    "grade": "correct",
+    "notes": "The system answer exactly matches the expected figure of $350,018 million."
+  },
+  {
+    "id": "X02",
+    "category": "factual",
+    "question": "What was Apple's total net sales in fiscal year 2022?",
+    "expected": "$394,328 million (approximately $394.3 billion)",
+    "actual": "Apple's total net sales in fiscal year 2022 were **$394,328 million** (or approximately $394.3 billion) [1][2].",
+    "sources": [
+      "AAPL/10-K/2022-09-24.json",
+      "AAPL/10-K/2022-09-24.json",
+      "AAPL/10-K/2022-09-24.json",
+      "AAPL/10-K/2022-09-24.json"
+    ],
+    "rewritten_query": "AAPL total net sales fiscal 2022",
+    "is_grounded": true,
+    "elapsed_s": 3.6,
+    "grade": "correct",
+    "notes": "The system's answer exactly matches the expected figure of $394,328 million."
+  },
+  {
+    "id": "X03",
+    "category": "factual",
+    "question": "What was Apple's total net sales in the quarter ended June 28, 2025?",
+    "expected": "$94,036 million (approximately $94.0 billion)",
+    "actual": "According to the consolidated statement of income, Apple's total net sales for the quarter ended June 28, 2025 (Q3) were **$94,036 million** [1].",
+    "sources": [
+      "AAPL/10-Q/2025-06-28.json",
+      "AAPL/10-Q/2025-06-28.json",
+      "AAPL/10-Q/2025-06-28.json",
+      "AAPL/10-Q/2025-06-28.json"
+    ],
+    "rewritten_query": "AAPL net sales Q3 2025 June 28 2025",
+    "is_grounded": true,
+    "elapsed_s": 7.9,
+    "grade": "correct",
+    "notes": "The system correctly identified Apple's total net sales as $94,036 million for the quarter ended June 28, 2025."
+  },
+  {
+    "id": "X04",
+    "category": "factual",
+    "question": "What was NVIDIA's Data Center segment revenue in the quarter ended July 31, 2022?",
+    "expected": "$3,806 million (approximately $3.8 billion)",
+    "actual": "I don't have enough information in the provided filings to answer this question.\n\nWhile the filings reference Data Center revenue and mention that Data Center segment revenue included $287 million for orders with extended payment terms [2], the income statement provided [1] only shows total revenue and Gaming revenue broken out separately. The filing does not provide a specific Data Center revenue figure for the quarter ended July 31, 2022. The filings indicate NVIDIA has two operating segments - \"Graphics\" and \"Compute & Networking\" [7] - but the revenue breakdown by these segments is not included in the context provided.",
+    "sources": [
+      "NVDA/10-Q/2022-07-31.json",
+      "NVDA/10-Q/2022-07-31.json",
+      "NVDA/10-Q/2022-07-31.json",
+      "NVDA/10-Q/2022-07-31.json"
+    ],
+    "rewritten_query": "NVIDIA Data Center segment revenue Q2 2023 July 31 2022",
+    "is_grounded": true,
+    "elapsed_s": 6.7,
+    "grade": "correct_refuse",
+    "notes": "The system correctly declined to answer, noting insufficient data in the provided filings, rather than fabricating a figure."
+  },
+  {
+    "id": "X05",
+    "category": "factual",
+    "question": "What were NVIDIA's total assets as of October 28, 2018?",
+    "expected": "$13,657 million (approximately $13.7 billion)",
+    "actual": "I don't have enough information in the provided filings to answer this question.\n\nThe context provided from the October 28, 2018 10-Q filing [1] only shows selected current asset line items (Cash and cash equivalents, Marketable securities, Accounts receivable, Inventories, and Prepaid expenses), but does not include the total assets figure or the complete balance sheet with all asset categories needed to calculate total assets.",
+    "sources": [
+      "NVDA/10-Q/2018-10-28.json",
+      "NVDA/10-Q/2018-04-29.json",
+      "NVDA/10-Q/2018-07-29.json",
+      "NVDA/10-Q/2017-10-29.json",
+      "NVDA/10-K/2018-01-28.json",
+      "NVDA/10-Q/2017-04-30.json",
+      "NVDA/10-Q/2017-07-30.json",
+      "NVDA/10-Q/2016-10-30.json",
+      "NVDA/10-K/2017-01-29.json",
+      "NVDA/10-K/2019-01-27.json"
+    ],
+    "rewritten_query": "NVIDIA total assets October 28 2018 balance sheet",
+    "is_grounded": true,
+    "elapsed_s": 4.1,
+    "grade": "wrong_refuse",
+    "notes": "The total assets figure of $13,657 million was available in the October 28, 2018 10-Q filing, but the system incorrectly claimed it lacked sufficient information to answer."
+  },
+  {
+    "id": "X06",
+    "category": "factual",
+    "question": "What was NVIDIA's gross profit in the quarter ended July 30, 2017?",
+    "expected": "$1,302 million (approximately $1.3 billion)",
+    "actual": "According to the Consolidated Statement of Income, NVIDIA's gross profit in the quarter ended July 30, 2017 was **$1,302 million** [2].",
+    "sources": [
+      "NVDA/10-Q/2017-07-30.json",
+      "NVDA/10-Q/2017-07-30.json",
+      "NVDA/10-Q/2017-07-30.json",
+      "NVDA/10-Q/2017-07-30.json"
+    ],
+    "rewritten_query": "NVIDIA gross profit quarter ended July 30 2017",
+    "is_grounded": true,
+    "elapsed_s": 4.2,
+    "grade": "correct",
+    "notes": "The system correctly identified NVIDIA's gross profit as $1,302 million for the quarter ended July 30, 2017."
+  },
+  {
+    "id": "X07",
+    "category": "factual",
+    "question": "How much did Microsoft hold in cash, cash equivalents, and short-term investments combined as of December 31, 2025?",
+    "expected": "$89,462 million (approximately $89.5 billion); cash and cash equivalents alone were $24,296 million",
+    "actual": "Based on the SEC filing excerpts, Microsoft held **$89.5 billion** in cash, cash equivalents, and short-term investments combined as of December 31, 2025.\n\nThis figure is composed of:\n- Cash and cash equivalents: $24,296 million ($24.3 billion)\n- Short-term investments: $65,166 million ($65.2 billion)\n- Total: $89,462 million ($89.5 billion) [2]\n\nThis is also confirmed in the Management's Discussion & Analysis section, which states: \"Cash, cash equivalents, and short-term investments totaled $89.5 billion as of December 31, 2025\" [4]",
+    "sources": [
+      "MSFT/10-Q/2025-12-31.json",
+      "MSFT/10-Q/2025-12-31.json",
+      "MSFT/10-Q/2025-12-31.json",
+      "MSFT/10-Q/2025-12-31.json"
+    ],
+    "rewritten_query": "MSFT cash cash equivalents short-term investments December 31 2025",
+    "is_grounded": true,
+    "elapsed_s": 4.6,
+    "grade": "correct",
+    "notes": "The system answer matches the expected figures exactly: $89,462 million total and $24,296 million in cash and cash equivalents."
+  },
+  {
+    "id": "X08",
+    "category": "factual",
+    "question": "What was Meta's share-based compensation expense for the nine months ended September 30, 2024?",
+    "expected": "$12,428 million (approximately $12.4 billion)",
+    "actual": "Based on the provided SEC filing context, Meta's share-based compensation expense for the nine months ended September 30, 2024 was **$12.43 billion** [1].",
+    "sources": [
+      "META/10-Q/2024-09-30.json",
+      "META/10-Q/2024-09-30.json"
+    ],
+    "rewritten_query": "Meta share-based compensation expense nine months September 30 2024",
+    "is_grounded": true,
+    "elapsed_s": 4.2,
+    "grade": "correct",
+    "notes": "The system answer of $12.43 billion matches the expected $12,428 million within rounding differences."
+  },
+  {
+    "id": "X09",
+    "category": "factual",
+    "question": "What was Microsoft's net income in fiscal year 2023?",
+    "expected": "$72,361 million (approximately $72.4 billion)",
+    "actual": "Microsoft's net income in fiscal year 2023 was $72,361 million (or approximately $72.4 billion) [4].",
+    "sources": [
+      "MSFT/10-K/2023-06-30.json",
+      "MSFT/10-K/2023-06-30.json",
+      "MSFT/10-K/2023-06-30.json",
+      "MSFT/10-K/2023-06-30.json"
+    ],
+    "rewritten_query": "MSFT net income fiscal 2023",
+    "is_grounded": true,
+    "elapsed_s": 3.9,
+    "grade": "correct",
+    "notes": "The system's answer exactly matches the expected net income figure of $72,361 million for Microsoft's fiscal year 2023."
+  },
+  {
+    "id": "X10",
+    "category": "analytical",
+    "question": "How did Alphabet's total revenue change from 2023 to 2024?",
+    "expected": "It grew from $307,394 million in 2023 to $350,018 million in 2024 — an increase of about $42.6 billion, or roughly 14%",
+    "actual": "# Alphabet's Total Revenue Change from 2023 to 2024\n\nAccording to the consolidated statement of income, Alphabet's total revenues were:\n\n- **2023**: $307,394 million [1]\n- **2024**: $350,018 million [1]\n\n**Change**: $350,018 million - $307,394 million = **$42,624 million increase** (approximately **13.9% growth**)\n\nThis revenue increase was driven by growth across multiple segments, including Google Search & other revenues (up $23.1 billion), YouTube ads (up $4.6 billion), Google Cloud (up $10.1 billion), and Google subscriptions, platforms, and devices (up $5.7 billion) [7].",
+    "sources": [
+      "GOOGL/10-K/2024-12-31.json",
+      "GOOGL/10-K/2023-12-31.json",
+      "GOOGL/10-K/2023-12-31.json",
+      "GOOGL/10-K/2024-12-31.json",
+      "GOOGL/10-K/2023-12-31.json",
+      "GOOGL/10-K/2024-12-31.json",
+      "GOOGL/10-K/2024-12-31.json",
+      "GOOGL/10-K/2023-12-31.json"
+    ],
+    "rewritten_query": "Alphabet GOOGL total revenue 2023 2024 change",
+    "is_grounded": true,
+    "elapsed_s": 8.1,
+    "grade": "correct",
+    "notes": "The system answer correctly states the 2023 and 2024 revenue figures ($307,394M and $350,018M), the dollar increase ($42,624M), and the percentage growth (~13.9%), all matching the expected answer."
+  },
+  {
+    "id": "X11",
+    "category": "unanswerable",
+    "question": "What was NVIDIA's total revenue in fiscal year 1995?",
+    "expected": "REFUSE — earliest indexed NVIDIA filings are from around 1999, so 1995 is outside the data range",
+    "actual": "I don't have NVIDIA CORP filings from **1995**. The indexed filings for NVDA cover **1999–2026**. Use the sidebar to fetch historical filings going further back.",
+    "sources": [],
+    "rewritten_query": "What was NVIDIA's total revenue in fiscal year 1995?",
+    "is_grounded": true,
+    "elapsed_s": 0.8,
+    "grade": "correct_refuse",
+    "notes": "The system correctly declined to answer, noting that NVIDIA's indexed filings only cover 1999–2026, which matches the expected refusal."
+  },
+  {
+    "id": "X12",
+    "category": "unanswerable",
+    "question": "What was Oracle's cloud revenue in fiscal year 2024?",
+    "expected": "REFUSE — Oracle is not in the indexed corpus",
+    "actual": "I don't have filings for the company mentioned in your question. The indexed companies are: AAPL, GOOGL, META, MSFT, NVDA. Use the sidebar to add more companies.",
+    "sources": [],
+    "rewritten_query": "What was Oracle's cloud revenue in fiscal year 2024?",
+    "is_grounded": true,
+    "elapsed_s": 0.8,
+    "grade": "correct_refuse",
+    "notes": "The system correctly declined to answer, indicating Oracle is not in its indexed corpus."
+  }
+]

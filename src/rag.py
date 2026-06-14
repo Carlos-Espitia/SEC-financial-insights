@@ -7,7 +7,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 import anthropic
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, CrossEncoder
+from rank_bm25 import BM25Okapi
 import chromadb
 
 load_dotenv()
@@ -15,10 +16,19 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 COLLECTION_NAME = "sec_filings"
 LLM_MODEL = "claude-haiku-4-5-20251001"
 CHROMA_DIR = Path(__file__).parent.parent / "data" / "index"
 SEC_FILINGS_DIR = Path(__file__).parent.parent / "data" / "sec-filings"
+
+# How many candidates to pull from each retriever (dense + sparse) before reranking.
+CANDIDATE_N = 20
+
+
+def _tokenize(text: str) -> list[str]:
+    """Lowercase alphanumeric tokenizer used for BM25 indexing and querying."""
+    return re.findall(r"[a-z0-9]+", text.lower())
 
 
 @dataclass
@@ -35,17 +45,36 @@ class RAGPipeline:
         logger.info("Loading embedding model...")
         self.embedder = SentenceTransformer(EMBEDDING_MODEL)
 
+        logger.info("Loading reranker model...")
+        self.reranker = CrossEncoder(RERANKER_MODEL)
+
         client = chromadb.PersistentClient(path=str(CHROMA_DIR))
         self.collection = client.get_collection(COLLECTION_NAME)
 
         self.claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+        # Pull every chunk once to build an in-memory BM25 (sparse) index alongside the
+        # dense vector index. Hybrid retrieval lets exact-term matches (segment names,
+        # "free cash flow", "dividends") surface even when the embedding model misses them.
+        logger.info("Building BM25 sparse index...")
+        self._build_bm25_index()
 
         # Scan the filings directory so intent detection adapts to whatever is indexed
         self._corpus = _scan_corpus(SEC_FILINGS_DIR)
         self._intent_prompt = _build_intent_prompt(self._corpus)
 
         logger.info(f"RAG pipeline ready. Collection has {self.collection.count()} chunks. "
+                    f"BM25 index: {len(self._bm25_docs)} docs. "
                     f"Corpus tickers: {sorted(self._corpus)}")
+
+    def _build_bm25_index(self) -> None:
+        """Loads all chunk documents + metadata from ChromaDB and builds a BM25 index."""
+        data = self.collection.get(include=["documents", "metadatas"])
+        self._bm25_ids = data["ids"]
+        self._bm25_docs = data["documents"]
+        self._bm25_meta = data["metadatas"]
+        tokenized = [_tokenize(doc) for doc in self._bm25_docs]
+        self._bm25 = BM25Okapi(tokenized)
 
     # ------------------------------------------------------------------ #
     # Public API                                                           #
@@ -55,7 +84,7 @@ class RAGPipeline:
         self,
         question: str,
         ticker: str | None = None,
-        k: int = 6,
+        k: int = 10,
         sections: list[str] | None = None,
         period: str | None = None,
         form_type: str | None = None,
@@ -85,8 +114,17 @@ class RAGPipeline:
             sections  = intent.get("sections")
             logger.info(f"Intent: {intent}")
 
-        # Gap detection — catch requests for companies or years outside the indexed corpus
-        gap_msg = self._check_coverage_gap(question, ticker, tickers)
+        # Gap detection — catch requests for companies or years outside the indexed corpus.
+        # The not_in_corpus flag only comes from intent detection; when the caller passes
+        # explicit filters they already know the ticker is valid, so default to False.
+        not_in_corpus = intent.get("not_in_corpus", False) if no_explicit_filters else False
+        # Guard: if we identified an in-corpus company, the deterministic ticker/year-range
+        # checks handle it — never fire the generic out-of-corpus message (a year being
+        # unavailable must not be reported as "company not indexed").
+        identified = (tickers or []) + ([ticker] if ticker else [])
+        if any(t in self._corpus for t in identified):
+            not_in_corpus = False
+        gap_msg = self._check_coverage_gap(question, ticker, tickers, not_in_corpus=not_in_corpus)
         if gap_msg:
             return RAGResult(
                 answer=gap_msg,
@@ -157,12 +195,21 @@ class RAGPipeline:
         question: str,
         ticker: str | None,
         tickers: list[str] | None,
+        not_in_corpus: bool = False,
     ) -> str | None:
         """
         Returns an explanatory refusal message when the question references a
         company not in the corpus, or a year clearly before the earliest indexed filing.
         Returns None when everything looks fine and retrieval should proceed.
         """
+        if not_in_corpus:
+            indexed = ", ".join(sorted(self._corpus.keys()))
+            return (
+                f"I don't have filings for the company mentioned in your question. "
+                f"The indexed companies are: {indexed}. "
+                f"Use the sidebar to add more companies."
+            )
+
         targets = tickers if tickers else ([ticker] if ticker else [])
 
         # Check for companies not in the corpus at all
@@ -226,9 +273,18 @@ class RAGPipeline:
                     raw = raw[4:]
                 raw = raw.strip()
             intent = json.loads(raw)
-            # If only one company was identified, keep it as ticker (not tickers list)
+            # If only one company was identified, keep it as ticker (not tickers list).
             if isinstance(intent.get("tickers"), list) and len(intent["tickers"]) == 1:
                 intent["ticker"] = intent.pop("tickers")[0]
+            # For a single-company question, lift any period that came through the
+            # periods dict up to `period` (which may be a string or a list of dates),
+            # then drop the now-redundant periods dict.
+            if intent.get("ticker") and not intent.get("period") \
+                    and isinstance(intent.get("periods"), dict):
+                p = intent["periods"].get(intent["ticker"])
+                if p:
+                    intent["period"] = p
+            if intent.get("ticker"):
                 intent["periods"] = None
             return intent
         except Exception as exc:
@@ -260,8 +316,18 @@ class RAGPipeline:
         return response.content[0].text.strip()
 
     # ------------------------------------------------------------------ #
-    # Step 2 — Retrieval                                                   #
+    # Step 2 — Retrieval (hybrid dense + sparse, then cross-encoder rerank) #
     # ------------------------------------------------------------------ #
+    #
+    # Design:
+    # - ticker / period / form_type are HARD filters — they are reliably
+    #   extracted and pinning the wrong company or year would be a correctness
+    #   failure.
+    # - `sections` is a SOFT signal, not on/off. We gather candidates BOTH
+    #   unfiltered (a recall safety net, so a wrong section guess can't silently
+    #   drop the answer) AND restricted to the guessed section(s) (so compact
+    #   statement/table chunks aren't drowned out by huge risk_factors/mda
+    #   sections). The cross-encoder reranker then picks the best across the pool.
 
     def _retrieve(
         self,
@@ -269,49 +335,20 @@ class RAGPipeline:
         ticker: str | None = None,
         k: int = 6,
         sections: list[str] | None = None,
-        period: str | None = None,
+        period: str | list[str] | None = None,
         form_type: str | None = None,
     ) -> list[dict]:
         """
-        Embeds the query and searches ChromaDB for the top-k most similar chunks.
-        Optionally filters by ticker, section, period, and/or form_type.
+        Hybrid retrieval for one company (or no ticker filter): gather dense +
+        sparse candidates across the requested period(s), rerank, return top k.
+        When comparing multiple periods, scale k so each filing stays represented.
         """
-        query_vector = self.embedder.encode(query).tolist()
-
-        # Build ChromaDB where filter
-        filters = []
-        if ticker:
-            filters.append({"ticker": {"$eq": ticker}})
-        if sections:
-            filters.append({"section": {"$in": sections}})
-        if period:
-            filters.append({"period": {"$eq": period}})
-        if form_type:
-            filters.append({"form_type": {"$eq": form_type}})
-
-        if len(filters) == 0:
-            where = None
-        elif len(filters) == 1:
-            where = filters[0]
-        else:
-            where = {"$and": filters}
-
-        results = self.collection.query(
-            query_embeddings=[query_vector],
-            n_results=k,
-            where=where,
-            include=["documents", "metadatas", "distances"],
-        )
-
-        chunks = []
-        for doc, meta, dist in zip(
-            results["documents"][0],
-            results["metadatas"][0],
-            results["distances"][0],
-        ):
-            chunks.append({"text": doc, "metadata": meta, "distance": dist})
-
-        return chunks
+        candidates = self._gather_candidates(query, ticker, period, form_type, sections)
+        if not candidates:
+            return []
+        n_periods = len(period) if isinstance(period, list) else 1
+        ranked = self._rerank(query, candidates)
+        return self._select_final(ranked, k * n_periods, sections)
 
     def _retrieve_multi_ticker(
         self,
@@ -323,20 +360,155 @@ class RAGPipeline:
         periods: dict[str, str] | None = None,
     ) -> list[dict]:
         """
-        Runs _retrieve() once per ticker and merges results sorted by distance.
-        This prevents one company's filings from dominating cross-company queries.
-        periods: optional per-ticker period pins, e.g. {"MSFT": "2024-06-30"}
+        Cross-company retrieval: gather + rerank each company's candidates
+        separately and take the top k_per_ticker from each, so one company can't
+        crowd the others out of the context for a comparison question.
+        periods: optional per-ticker period pins, e.g. {"MSFT": "2024-06-30"}.
         """
         all_chunks = []
         for ticker in tickers:
             period = periods.get(ticker) if periods else None
-            chunks = self._retrieve(
-                query, ticker=ticker, k=k_per_ticker,
-                sections=sections, form_type=form_type, period=period,
-            )
-            all_chunks.extend(chunks)
-        all_chunks.sort(key=lambda x: x["distance"])
+            candidates = self._gather_candidates(query, ticker, period, form_type, sections)
+            if candidates:
+                ranked = self._rerank(query, candidates)
+                all_chunks.extend(self._select_final(ranked, k_per_ticker, sections))
         return all_chunks
+
+    def _gather_candidates(
+        self,
+        query: str,
+        ticker: str | None,
+        period: str | list[str] | None,
+        form_type: str | None,
+        sections: list[str] | None,
+    ) -> list[dict]:
+        """
+        Pulls dense + sparse candidates for a single ticker, fanning out over each
+        period when `period` is a list (a multi-year/quarter comparison), and
+        deduplicates by chunk id. Gathers both an unfiltered pool (recall) and a
+        section-targeted pool (precision for compact statement chunks).
+        """
+        periods = period if isinstance(period, list) else [period]
+        query_vector = self.embedder.encode(query).tolist()
+
+        by_id: dict[str, dict] = {}
+        for p in periods:
+            # Unfiltered pool — safety net if the section guess is wrong.
+            for c in self._dense_search(query_vector, ticker, p, form_type, None, CANDIDATE_N):
+                by_id.setdefault(c["id"], c)
+            for c in self._sparse_search(query, ticker, p, form_type, None, CANDIDATE_N):
+                by_id.setdefault(c["id"], c)
+            # Section-targeted pool — guarantees the guessed section's chunks are
+            # candidates even when a bigger section would otherwise crowd them out.
+            if sections:
+                for c in self._dense_search(query_vector, ticker, p, form_type, sections, CANDIDATE_N):
+                    by_id.setdefault(c["id"], c)
+                for c in self._sparse_search(query, ticker, p, form_type, sections, CANDIDATE_N):
+                    by_id.setdefault(c["id"], c)
+        return list(by_id.values())
+
+    def _dense_search(
+        self,
+        query_vector: list[float],
+        ticker: str | None,
+        period: str | None,
+        form_type: str | None,
+        sections: list[str] | None,
+        n: int,
+    ) -> list[dict]:
+        """Dense (embedding) similarity query against ChromaDB with metadata filters."""
+        filters = []
+        if ticker:
+            filters.append({"ticker": {"$eq": ticker}})
+        if period:
+            filters.append({"period": {"$eq": period}})
+        if form_type:
+            filters.append({"form_type": {"$eq": form_type}})
+        if sections:
+            filters.append({"section": {"$in": sections}})
+
+        where = None if not filters else (filters[0] if len(filters) == 1 else {"$and": filters})
+
+        results = self.collection.query(
+            query_embeddings=[query_vector],
+            n_results=n,
+            where=where,
+            include=["documents", "metadatas"],
+        )
+        chunks = []
+        for cid, doc, meta in zip(
+            results["ids"][0], results["documents"][0], results["metadatas"][0]
+        ):
+            chunks.append({"id": cid, "text": doc, "metadata": meta})
+        return chunks
+
+    def _sparse_search(
+        self,
+        query: str,
+        ticker: str | None,
+        period: str | None,
+        form_type: str | None,
+        sections: list[str] | None,
+        n: int,
+    ) -> list[dict]:
+        """BM25 (keyword) search over the in-memory index with the same metadata filters."""
+        scores = self._bm25.get_scores(_tokenize(query))
+        matching = []
+        for i, meta in enumerate(self._bm25_meta):
+            if ticker and meta["ticker"] != ticker:
+                continue
+            if period and meta["period"] != period:
+                continue
+            if form_type and meta["form_type"] != form_type:
+                continue
+            if sections and meta["section"] not in sections:
+                continue
+            matching.append(i)
+        matching.sort(key=lambda i: scores[i], reverse=True)
+        return [
+            {"id": self._bm25_ids[i], "text": self._bm25_docs[i], "metadata": self._bm25_meta[i]}
+            for i in matching[:n]
+        ]
+
+    def _rerank(self, query: str, candidates: list[dict]) -> list[dict]:
+        """Scores every candidate against the query with the cross-encoder, sorted best-first."""
+        pairs = [[query, c["text"]] for c in candidates]
+        scores = self.reranker.predict(pairs)
+        for c, s in zip(candidates, scores):
+            c["rerank_score"] = float(s)
+        candidates.sort(key=lambda c: c["rerank_score"], reverse=True)
+        return candidates
+
+    def _select_final(
+        self, ranked: list[dict], k: int, sections: list[str] | None, reserve: int = 3
+    ) -> list[dict]:
+        """
+        Picks the final k chunks from the reranked list. When intent names specific
+        sections, reserve up to `reserve` slots for the best chunks from those
+        sections. The cross-encoder (trained on web prose) systematically under-ranks
+        dense numeric statement tables — exactly where balance-sheet / cash-flow /
+        income-statement answers live — so without this a line-item value can sit just
+        below the cut-off and the model answers "not enough information". The remaining
+        slots follow the reranker's order, preserving the recall safety net for cases
+        where the section guess is wrong.
+        """
+        if not sections or k <= reserve:
+            return ranked[:k]
+
+        chosen, chosen_ids = [], set()
+        for c in ranked:
+            if len(chosen) >= reserve:
+                break
+            if c["metadata"]["section"] in sections:
+                chosen.append(c)
+                chosen_ids.add(c["id"])
+        for c in ranked:
+            if len(chosen) >= k:
+                break
+            if c["id"] not in chosen_ids:
+                chosen.append(c)
+                chosen_ids.add(c["id"])
+        return chosen
 
     # ------------------------------------------------------------------ #
     # Step 3 — Generation                                                  #
@@ -361,13 +533,20 @@ class RAGPipeline:
             "Cite sources by referencing the numbered blocks (e.g. [1], [2]). "
             "If the answer cannot be found in the context, respond with exactly: "
             "'I don't have enough information in the provided filings to answer this question.' "
-            "Never fabricate numbers or facts not present in the context."
+            "Never fabricate numbers or facts not present in the context. "
+            "When comparing values across companies or time periods, read each value carefully "
+            "from its labeled source block and state the exact numbers before drawing conclusions. "
+            "If the context contains a figure the company reports and labels directly (for example a "
+            "'Free cash flow' line in a reconciliation table), use that reported figure rather than "
+            "recomputing it from other line items, since reported non-GAAP measures may include "
+            "adjustments you cannot see."
         )
 
         user = (
             f"Context from SEC filings:\n\n{context}\n\n"
             f"Question: {question}\n\n"
-            "Provide a concise, accurate answer with citations to the numbered sources above."
+            "Provide a concise, accurate answer with citations to the numbered sources above. "
+            "For comparison questions, quote the specific values from each source before concluding which is higher or lower."
         )
 
         response = self.claude.messages.create(
@@ -478,22 +657,59 @@ def _build_intent_prompt(corpus: dict) -> str:
     lines += [
         "",
         "Given the question below, return a JSON object with exactly these keys:",
-        '  "ticker"    : single ticker string if the question is about ONE company, else null',
-        '  "tickers"   : list of tickers if the question compares MULTIPLE companies, else null',
-        '  "period"    : period-end date "YYYY-MM-DD" for single-company questions, else null',
-        '  "periods"   : dict of ticker->period-end for multi-company questions, else null',
-        '  "form_type" : "10-K" for annual questions, "10-Q" for quarterly, else null',
-        '  "sections"  : list from ["business","risk_factors","mda","income_statement",',
-        '                "balance_sheet","cash_flow_statement"] relevant to the question, else null',
+        '  "ticker"       : single ticker string if the question is about ONE company, else null',
+        '  "tickers"      : list of ALL tickers if the question mentions or compares MULTIPLE companies, else null',
+        '  "period"       : for a single-company question, the relevant period-end date "YYYY-MM-DD";',
+        '                   if it compares multiple specific years/quarters of that ONE company,',
+        '                   a LIST of date strings (e.g. ["2022-12-31","2023-12-31"]); else null',
+        '  "periods"      : dict of ticker -> period-end date (string, or list of strings) for',
+        '                   multi-company questions, else null',
+        '  "form_type"    : "10-K" for annual questions, "10-Q" for quarterly, else null',
+        '  "sections"     : list from ["business","risk_factors","mda","income_statement",',
+        '                   "balance_sheet","cash_flow_statement"] relevant to the question, else null',
+        '  "not_in_corpus": true if the question is about a company NOT listed in the database above, else false',
         "",
         "Rules:",
-        "- Match fiscal year references to the nearest available 10-K period-end date listed above.",
-        "- Match quarter references (Q1/Q2/Q3) to the nearest available 10-Q period-end date.",
-        "- For multi-company comparisons, use 'tickers' + 'periods' (not 'ticker'/'period').",
-        "- For risk questions: sections=[\"risk_factors\"]. For performance/narrative: sections=[\"mda\"].",
-        "- For cash flow questions: include \"cash_flow_statement\" in sections.",
-        "- If no specific year is mentioned, set period and periods to null.",
-        "- Only output valid JSON. No explanation, no markdown fences.",
+        "FISCAL YEAR MAPPING — always use the actual period-end dates listed above:",
+        "- Each company labels fiscal years differently. Use the period-end dates, not the fiscal year name.",
+        "- Example: AAPL 'fiscal year 2024' = 2024-09-28. NVDA 'fiscal year 2024' = 2024-01-28.",
+        "",
+        "MULTI-YEAR COMPARISONS (same company) — when a question compares TWO OR MORE specific years",
+        "or quarters of one company (e.g. 'from 2022 to 2023', 'between FY2023 and FY2024',",
+        "'Q3 2023 versus Q3 2022', 'how did X change'):",
+        "- Set period to a LIST containing the period-end date of EACH year/quarter mentioned.",
+        "- Always include ALL the periods being compared. Some facts (e.g. employee headcount) are stated",
+        "  only for the current year of each filing, so both filings must be retrieved.",
+        "- Example: 'Alphabet headcount from end of 2022 to end of 2023' -> period=[\"2022-12-31\",\"2023-12-31\"].",
+        "",
+        "MULTI-COMPANY — when the question explicitly names multiple companies:",
+        "- Set tickers to the list of ALL mentioned companies (e.g. ['MSFT','GOOGL','META']).",
+        "- Set periods to a dict mapping each ticker to its relevant period-end date (or list of dates).",
+        "- NEVER set only one ticker when the question asks to compare several named companies.",
+        "",
+        "QUARTERLY PERIODS — match the quarter to the correct period-end date:",
+        "- 'Q3 2023' for a company with September quarter-end = the period ending 2023-09-30.",
+        "- 'Q2 FY2024' for NVDA (July quarter-end) = the period ending 2024-07-28.",
+        "",
+        "SECTIONS:",
+        "- Revenue, margins, expenses, profitability, headcount, segment performance → ['mda','income_statement']",
+        "- Risk factors, supply chain, geopolitical, competition → ['risk_factors']",
+        "- Free cash flow → ['mda','cash_flow_statement']. Companies report free cash flow as a",
+        "  non-GAAP measure in the MD&A liquidity section (a reconciliation table), so MD&A must be",
+        "  included to find the company's own reported figure, not just the raw cash flow statement.",
+        "- Operating cash flow, capital expenditures → ['cash_flow_statement']",
+        "- Balance sheet items (debt, assets, equity) → ['balance_sheet']",
+        "",
+        "NOT IN CORPUS vs. YEAR UNAVAILABLE — do not confuse these:",
+        "- Set not_in_corpus=true ONLY when the COMPANY itself is not in the list above",
+        "  (e.g. Tesla, Amazon, Salesforce, Netflix).",
+        "- If the company IS in the list but the requested YEAR is not available, set not_in_corpus=false",
+        "  and STILL set ticker to that in-corpus company (set period to null). A year being unavailable",
+        "  does NOT make a company not_in_corpus.",
+        "- Example: 'Meta revenue in 2019' -> ticker=\"META\", not_in_corpus=false.",
+        "",
+        "Each date must be a string 'YYYY-MM-DD'. Use a list only to hold multiple such dates.",
+        "Only output valid JSON. No explanation, no markdown fences.",
     ]
     return "\n".join(lines)
 

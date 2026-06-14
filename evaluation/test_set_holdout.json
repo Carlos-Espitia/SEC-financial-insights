@@ -1,0 +1,215 @@
+[
+  {
+    "id": "H01",
+    "category": "factual",
+    "question": "What are Microsoft's three reportable business segments?",
+    "expected_answer": "Productivity and Business Processes, Intelligent Cloud, and More Personal Computing",
+    "source": "MSFT/10-K/2024-06-30.json",
+    "section": "business",
+    "notes": "Verified from business section. Tests segment-name retrieval from the business section (not MD&A)."
+  },
+  {
+    "id": "H02",
+    "category": "factual",
+    "question": "How much did Microsoft spend on additions to property, plant and equipment in fiscal year 2024?",
+    "expected_answer": "$44,477 million (approximately $44.5 billion)",
+    "source": "MSFT/10-K/2024-06-30.json",
+    "section": "cash_flow_statement",
+    "notes": "Verified from cash flow statement. Tests cash-flow-statement retrieval for capex."
+  },
+  {
+    "id": "H03",
+    "category": "factual",
+    "question": "How much did Microsoft pay in dividends in fiscal year 2024?",
+    "expected_answer": "$21,771 million (approximately $21.8 billion)",
+    "source": "MSFT/10-K/2024-06-30.json",
+    "section": "cash_flow_statement",
+    "notes": "Verified from cash flow statement (dividends paid)."
+  },
+  {
+    "id": "H04",
+    "category": "factual",
+    "question": "How much did Apple spend repurchasing its common stock in fiscal year 2024?",
+    "expected_answer": "$94,949 million (approximately $95 billion)",
+    "source": "AAPL/10-K/2024-09-28.json",
+    "section": "cash_flow_statement",
+    "notes": "Verified from cash flow statement (repurchases of common stock)."
+  },
+  {
+    "id": "H05",
+    "category": "factual",
+    "question": "What was Apple's total term debt as of September 28, 2024?",
+    "expected_answer": "$96,662 million total ($10,912 million current term debt plus $85,750 million non-current term debt)",
+    "source": "AAPL/10-K/2024-09-28.json",
+    "section": "balance_sheet",
+    "notes": "Verified from balance sheet. Tests balance-sheet retrieval and summing current + non-current term debt."
+  },
+  {
+    "id": "H06",
+    "category": "factual",
+    "question": "What were Apple's total assets at the end of fiscal year 2024?",
+    "expected_answer": "$364,980 million (approximately $365 billion)",
+    "source": "AAPL/10-K/2024-09-28.json",
+    "section": "balance_sheet",
+    "notes": "Verified from balance sheet."
+  },
+  {
+    "id": "H07",
+    "category": "factual",
+    "question": "How much stock did Alphabet repurchase in 2023?",
+    "expected_answer": "$61,504 million (approximately $61.5 billion)",
+    "source": "GOOGL/10-K/2023-12-31.json",
+    "section": "cash_flow_statement",
+    "notes": "Verified from cash flow statement (repurchases of stock)."
+  },
+  {
+    "id": "H08",
+    "category": "factual",
+    "question": "What were Alphabet's capital expenditures (purchases of property and equipment) in 2023?",
+    "expected_answer": "$32,251 million (approximately $32.3 billion)",
+    "source": "GOOGL/10-K/2023-12-31.json",
+    "section": "cash_flow_statement",
+    "notes": "Verified from cash flow statement."
+  },
+  {
+    "id": "H09",
+    "category": "factual",
+    "question": "What are Alphabet's reportable segments?",
+    "expected_answer": "Google Services, Google Cloud, and Other Bets",
+    "source": "GOOGL/10-K/2023-12-31.json",
+    "section": "business",
+    "notes": "Verified from business section."
+  },
+  {
+    "id": "H10",
+    "category": "factual",
+    "question": "How much did Meta spend repurchasing its Class A common stock in 2023?",
+    "expected_answer": "$19,774 million (approximately $19.8 billion)",
+    "source": "META/10-K/2023-12-31.json",
+    "section": "cash_flow_statement",
+    "notes": "Verified from cash flow statement."
+  },
+  {
+    "id": "H11",
+    "category": "factual",
+    "question": "What were Meta's capital expenditures in 2023?",
+    "expected_answer": "$27,266 million (approximately $27.3 billion) in purchases of property and equipment",
+    "source": "META/10-K/2023-12-31.json",
+    "section": "cash_flow_statement",
+    "notes": "Verified from cash flow statement."
+  },
+  {
+    "id": "H12",
+    "category": "factual",
+    "question": "How much cash and cash equivalents did Meta hold at the end of 2023?",
+    "expected_answer": "$41,862 million (approximately $41.9 billion) in cash and cash equivalents (plus $23,541 million in marketable securities)",
+    "source": "META/10-K/2023-12-31.json",
+    "section": "balance_sheet",
+    "notes": "Verified from balance sheet. Cash and cash equivalents line item specifically."
+  },
+  {
+    "id": "H13",
+    "category": "factual",
+    "question": "What was NVIDIA's total revenue in fiscal year 2023 (the year ended January 29, 2023), and how did it compare to the prior year?",
+    "expected_answer": "$26,974 million, essentially flat versus $26,914 million in fiscal year 2022 (an increase of only about $60 million, or 0.2%)",
+    "source": "NVDA/10-K/2023-01-29.json",
+    "section": "income_statement",
+    "notes": "Verified. Tests retrieval of an earlier NVDA year (the flat year before the AI boom), distinct from v3's FY2024/FY2025 questions."
+  },
+  {
+    "id": "H14",
+    "category": "factual",
+    "question": "What was NVIDIA's total revenue in the second quarter of fiscal year 2024 (the quarter ended July 30, 2023)?",
+    "expected_answer": "$13,507 million (approximately $13.5 billion)",
+    "source": "NVDA/10-Q/2023-07-30.json",
+    "section": "income_statement",
+    "notes": "Verified. Tests mapping 'Q2 FY2024' to the July 2023 quarter-end date for NVDA's January fiscal year."
+  },
+  {
+    "id": "H15",
+    "category": "factual",
+    "question": "How much cash and cash equivalents did Microsoft hold as of June 30, 2024?",
+    "expected_answer": "$18,315 million (approximately $18.3 billion)",
+    "source": "MSFT/10-K/2024-06-30.json",
+    "section": "balance_sheet",
+    "notes": "Verified from balance sheet (cash and cash equivalents line item)."
+  },
+  {
+    "id": "H16",
+    "category": "analytical",
+    "question": "Why was NVIDIA's revenue roughly flat in fiscal year 2023 (ended January 2023), and what happened to its Gaming business that year?",
+    "expected_answer": "Total revenue was essentially flat (~$26.97 billion vs ~$26.91 billion) because a sharp decline in Gaming revenue — driven by weaker demand, channel inventory corrections, and the collapse of cryptocurrency-related GPU demand — offset growth elsewhere (Data Center). The year was a consolidation period before the AI-driven surge of FY2024.",
+    "source": "NVDA/10-K/2023-01-29.json",
+    "section": "mda",
+    "notes": "Tests analytical retrieval from an earlier NVDA MD&A. Key theme: Gaming decline / crypto / inventory correction offsetting Data Center."
+  },
+  {
+    "id": "H17",
+    "category": "analytical",
+    "question": "How did Apple return cash to shareholders in fiscal year 2024 through dividends and buybacks?",
+    "expected_answer": "Apple paid $15,234 million in dividends and dividend equivalents and repurchased $94,949 million of common stock in fiscal year 2024 — roughly $110 billion returned to shareholders in total.",
+    "source": "AAPL/10-K/2024-09-28.json",
+    "section": "cash_flow_statement",
+    "notes": "Verified. Tests combining two cash-flow line items (dividends + buybacks) into one answer."
+  },
+  {
+    "id": "H18",
+    "category": "analytical",
+    "question": "What does Microsoft's More Personal Computing segment include?",
+    "expected_answer": "The More Personal Computing segment covers Windows (OEM licensing and commercial), Devices (including Surface and PC accessories), Gaming (including Xbox hardware and content/services, and Activision Blizzard), and Search and news advertising (Bing).",
+    "source": "MSFT/10-K/2024-06-30.json",
+    "section": "business",
+    "notes": "Tests retrieval of segment composition from the business section. Acceptable if it captures Windows, Devices/Surface, Gaming/Xbox, and Search/Bing."
+  },
+  {
+    "id": "H19",
+    "category": "cross_company",
+    "question": "Which company repurchased more of its own stock in 2023: Alphabet or Meta?",
+    "expected_answer": "Alphabet repurchased far more — $61,504 million versus Meta's $19,774 million (Alphabet bought back roughly 3x as much).",
+    "source": "GOOGL/10-K/2023-12-31.json, META/10-K/2023-12-31.json",
+    "section": "cash_flow_statement",
+    "notes": "Cross-company comparison from cash flow statements. Verified figures."
+  },
+  {
+    "id": "H20",
+    "category": "cross_company",
+    "question": "Compare Alphabet's and Meta's capital expenditures in 2023 — which was higher?",
+    "expected_answer": "Alphabet's capital expenditures were higher at $32,251 million versus Meta's $27,266 million.",
+    "source": "GOOGL/10-K/2023-12-31.json, META/10-K/2023-12-31.json",
+    "section": "cash_flow_statement",
+    "notes": "Cross-company capex comparison. Verified figures."
+  },
+  {
+    "id": "H21",
+    "category": "cross_company",
+    "question": "Which company reported more cash and cash equivalents on its most recent fiscal year-end balance sheet: Apple (FY2024) or Microsoft (FY2024)?",
+    "expected_answer": "Apple reported more cash and cash equivalents at $29,943 million versus Microsoft's $18,315 million. (Note: this is only the cash-and-equivalents line item; both companies hold substantial additional marketable securities.)",
+    "source": "AAPL/10-K/2024-09-28.json, MSFT/10-K/2024-06-30.json",
+    "section": "balance_sheet",
+    "notes": "Cross-company balance-sheet comparison with explicit period disambiguation. Verified figures."
+  },
+  {
+    "id": "H22",
+    "category": "unanswerable",
+    "question": "What was Salesforce's total revenue in fiscal year 2023?",
+    "expected_answer": "REFUSE — Salesforce is not in the indexed corpus",
+    "source": null,
+    "notes": "Only AAPL, GOOGL, META, MSFT, NVDA are indexed. Should refuse and state Salesforce is unavailable."
+  },
+  {
+    "id": "H23",
+    "category": "unanswerable",
+    "question": "What was Microsoft's market capitalization as of June 30, 2024?",
+    "expected_answer": "REFUSE — market capitalization is not reported in SEC filings",
+    "source": null,
+    "notes": "Market cap is a market-derived figure, not contained in the 10-K."
+  },
+  {
+    "id": "H24",
+    "category": "unanswerable",
+    "question": "What percentage of Apple's iPhone buyers in fiscal year 2024 were first-time smartphone owners?",
+    "expected_answer": "REFUSE — this customer demographic detail is not disclosed in Apple's SEC filings",
+    "source": null,
+    "notes": "Apple does not disclose buyer demographics in its 10-K. The system should refuse rather than fabricate."
+  }
+]

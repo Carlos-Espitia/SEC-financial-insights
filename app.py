@@ -144,17 +144,18 @@ COMPANIES = load_companies()  # {ticker: {name, cik, revenue_concept}}
 COMPANY_NAMES = {t: info["name"] for t, info in COMPANIES.items()}
 COLORS = get_colors(list(COMPANIES.keys()))
 
-ticker_list_str = " · ".join(sorted(COMPANIES.keys())) if COMPANIES else "No companies yet"
 year_range = get_filing_year_range()
 filing_count = len(list(SEC_FILINGS_DIR.glob("**/*.json"))) if SEC_FILINGS_DIR.exists() else 0
+company_count = len(COMPANIES)
 
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.title("SEC Filing Analyzer")
-    st.caption(f"**{ticker_list_str}**")
+    if company_count:
+        st.caption(f"**{company_count} {'company' if company_count == 1 else 'companies'} indexed**")
     if year_range:
-        st.caption(f"{filing_count} filings indexed  ·  {year_range}")
+        st.caption(f"{filing_count} filings  ·  {year_range}")
     st.divider()
 
     company_filter = st.selectbox(

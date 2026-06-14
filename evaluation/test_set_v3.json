@@ -1,0 +1,354 @@
+[
+  {
+    "id": "F01",
+    "category": "factual",
+    "question": "What was Meta's free cash flow in fiscal year 2022?",
+    "expected_answer": "$18,439 million",
+    "source": "META/10-K/2022-12-31.json",
+    "section": "mda",
+    "notes": "Direct from FCF reconciliation table in Liquidity section."
+  },
+  {
+    "id": "F02",
+    "category": "factual",
+    "question": "What was Meta's total revenue in the third quarter of 2023?",
+    "expected_answer": "$34.15 billion, an increase of 23% compared to Q3 2022",
+    "source": "META/10-Q/2023-09-30.json",
+    "section": "mda",
+    "notes": "Direct quote: 'Our total revenue for the third quarter of 2023 was $34.15 billion, an increase of 23%...'"
+  },
+  {
+    "id": "F03",
+    "category": "factual",
+    "question": "How many employees did Alphabet have as of December 31, 2023?",
+    "expected_answer": "182,502 employees",
+    "source": "GOOGL/10-K/2023-12-31.json",
+    "section": "mda",
+    "notes": "Direct quote: 'As of December 31, 2023, we had 182,502 employees.'"
+  },
+  {
+    "id": "F04",
+    "category": "factual",
+    "question": "What was Microsoft's total cloud revenue in fiscal year 2024, and by how much did it grow?",
+    "expected_answer": "$137.4 billion, an increase of 23%",
+    "source": "MSFT/10-K/2024-06-30.json",
+    "section": "mda",
+    "notes": "Direct quote: 'Microsoft Cloud revenue increased 23% to $137.4 billion.'"
+  },
+  {
+    "id": "F05",
+    "category": "factual",
+    "question": "What was Meta's headcount as of September 30, 2023?",
+    "expected_answer": "66,185 employees, a decrease of 24% year-over-year",
+    "source": "META/10-Q/2023-09-30.json",
+    "section": "mda",
+    "notes": "Direct quote: 'Headcount was 66,185 as of September 30, 2023, a decrease of 24% year-over-year.'"
+  },
+  {
+    "id": "F06",
+    "category": "factual",
+    "question": "What was Microsoft's Azure cloud services revenue growth rate in Q2 fiscal year 2024 (the quarter ended December 31, 2023)?",
+    "expected_answer": "30%",
+    "source": "MSFT/10-Q/2023-12-31.json",
+    "section": "mda",
+    "notes": "Direct quote: 'Server products and cloud services revenue increased 22% driven by Azure and other cloud services growth of 30%.'"
+  },
+  {
+    "id": "F07",
+    "category": "factual",
+    "question": "What was Alphabet's research and development spending as a percentage of revenue in 2023?",
+    "expected_answer": "15% ($45,427 million on revenues of $307,394 million)",
+    "source": "GOOGL/10-K/2023-12-31.json",
+    "section": "mda",
+    "notes": "Directly stated in MDA: 'Research and development expenses as a percentage of revenues 14% 15%' (2022 then 2023)."
+  },
+  {
+    "id": "F08",
+    "category": "factual",
+    "question": "What was Apple's total net sales in fiscal year 2023?",
+    "expected_answer": "$383.3 billion, a decrease of approximately 3% from $394.3 billion in fiscal year 2022",
+    "source": "AAPL/10-K/2023-09-30.json",
+    "section": "mda",
+    "notes": "Verified from actual file. Products declined (iPhone -2%, Mac -27%, iPad -3%, Wearables -3%) while Services grew 9% to $85.2B."
+  },
+  {
+    "id": "F09",
+    "category": "factual",
+    "question": "What was Apple's Services revenue in fiscal year 2024?",
+    "expected_answer": "$96.2 billion, an increase of approximately 13% from $85.2 billion in fiscal year 2023",
+    "source": "AAPL/10-K/2024-09-28.json",
+    "section": "mda",
+    "notes": "Verified from actual file. Services gross margin in FY2024 was 73.9%, up from 70.8% in FY2023."
+  },
+  {
+    "id": "F10",
+    "category": "factual",
+    "question": "What was Apple's blended gross margin percentage in fiscal year 2024?",
+    "expected_answer": "46.2% ($180.7 billion gross profit on $391.0 billion net sales), up from 44.1% in fiscal year 2023",
+    "source": "AAPL/10-K/2024-09-28.json",
+    "section": "mda",
+    "notes": "Verified from actual file. Products gross margin was 37.2% and Services gross margin was 73.9%."
+  },
+  {
+    "id": "F11",
+    "category": "factual",
+    "question": "What was Apple's iPhone revenue in fiscal year 2023?",
+    "expected_answer": "$200.6 billion, a decrease of approximately 2% from fiscal year 2022",
+    "source": "AAPL/10-K/2023-09-30.json",
+    "section": "mda",
+    "notes": "Verified from actual file. iPhone is Apple's largest product category."
+  },
+  {
+    "id": "F12",
+    "category": "factual",
+    "question": "What was Apple's Services revenue in Q1 fiscal year 2025 (the quarter ended December 28, 2024)?",
+    "expected_answer": "$26.3 billion, an increase of 14% compared to the same quarter of fiscal year 2024",
+    "source": "AAPL/10-Q/2024-12-28.json",
+    "section": "mda",
+    "notes": "Verified from actual file. The filing states Services grew due to higher net sales from advertising, App Store, and cloud services. Services gross margin was 75.0%, up from 72.8%."
+  },
+  {
+    "id": "F13",
+    "category": "factual",
+    "question": "What was NVIDIA's total revenue in fiscal year 2024 (the year ended January 28, 2024)?",
+    "expected_answer": "$60.9 billion, an increase of 125% from fiscal year 2023",
+    "source": "NVDA/10-K/2024-01-28.json",
+    "section": "mda",
+    "notes": "Verified from actual file. Gross margin was 72.7%. Data Center represented 78% of total revenue at $47.5B."
+  },
+  {
+    "id": "F14",
+    "category": "factual",
+    "question": "What was NVIDIA's Data Center segment revenue in fiscal year 2024 (year ended January 28, 2024), and what percentage of total revenue did it represent?",
+    "expected_answer": "$47.5 billion, representing 78% of total revenue",
+    "source": "NVDA/10-K/2024-01-28.json",
+    "section": "mda",
+    "notes": "Verified from actual file. Data Center compute was $38.95B, Data Center networking was $8.6B."
+  },
+  {
+    "id": "F15",
+    "category": "factual",
+    "question": "What was NVIDIA's total revenue in fiscal year 2025 (the year ended January 26, 2025)?",
+    "expected_answer": "$130.5 billion, an increase of 114% from $60.9 billion in fiscal year 2024",
+    "source": "NVDA/10-K/2025-01-26.json",
+    "section": "mda",
+    "notes": "Verified from actual file. Data Center reached $115.2B (88% of total). Gross margin improved to 75.1%."
+  },
+  {
+    "id": "F16",
+    "category": "factual",
+    "question": "What was NVIDIA's total revenue in the third quarter of fiscal year 2025 (the quarter ended October 27, 2024)?",
+    "expected_answer": "$35.1 billion, an increase of 94% year-over-year and 17% sequentially",
+    "source": "NVDA/10-Q/2024-10-27.json",
+    "section": "mda",
+    "notes": "Verified from actual file. Compute & Networking was $31.0B (up 112% YoY). Tests ability to map 'Q3 FY2025' to the October 2024 quarter-end date."
+  },
+  {
+    "id": "A01",
+    "category": "analytical",
+    "question": "What drove Meta's operating margin improvement from 2022 to 2023?",
+    "expected_answer": "Operating margin improved from 25% to 35%, driven by higher advertising revenue and a 19% decrease in marketing and sales expenses (down $2.96 billion), along with lower employee headcount",
+    "source": "META/10-K/2023-12-31.json",
+    "section": "mda",
+    "notes": "Operating margin 25% -> 35% confirmed in the operating margin table."
+  },
+  {
+    "id": "A02",
+    "category": "analytical",
+    "question": "How did Meta's free cash flow change from 2022 to 2023?",
+    "expected_answer": "Meta's free cash flow more than doubled from $18,439 million in 2022 to $43,010 million in 2023",
+    "source": "META/10-K/2023-12-31.json",
+    "section": "mda",
+    "notes": "From FCF reconciliation table in 2023 10-K MDA."
+  },
+  {
+    "id": "A03",
+    "category": "analytical",
+    "question": "What was Meta's Reality Labs operating loss in fiscal year 2022?",
+    "expected_answer": "$13,717 million, an increase of 35% from the $10,193 million loss in 2021",
+    "source": "META/10-K/2022-12-31.json",
+    "section": "mda",
+    "notes": "From segment table: 'Reality Labs $(13,717) $(10,193) $(6,623)'."
+  },
+  {
+    "id": "A04",
+    "category": "analytical",
+    "question": "How did Google Cloud's profitability change from 2022 to 2023?",
+    "expected_answer": "Google Cloud swung from an operating loss of approximately $1.9 billion in 2022 to operating income of $1.7 billion in 2023, an improvement of $3.6 billion",
+    "source": "GOOGL/10-K/2023-12-31.json",
+    "section": "mda",
+    "notes": "Direct quote: 'Google Cloud operating income of $1.7 billion for 2023 compared to an operating loss of $1.9 billion for 2022 represents an increase of $3.6 billion.'"
+  },
+  {
+    "id": "A05",
+    "category": "analytical",
+    "question": "What was Meta's Family of Apps operating margin in Q3 2023, and how did it compare to Q3 2022?",
+    "expected_answer": "52% in Q3 2023, up from 34% in Q3 2022 — an 18 percentage point improvement driven by revenue growth and lower costs",
+    "source": "META/10-Q/2023-09-30.json",
+    "section": "mda",
+    "notes": "From operating margin table in Q3 2023 10-Q."
+  },
+  {
+    "id": "A06",
+    "category": "analytical",
+    "question": "What drove the decline in Apple's Greater China net sales in fiscal year 2024?",
+    "expected_answer": "Apple's Greater China revenue declined 8% from $72.6 billion to $66.9 billion, driven by lower net sales of iPhone and iPad. The weakness in the renminbi relative to the U.S. dollar also had an unfavorable year-over-year impact.",
+    "source": "AAPL/10-K/2024-09-28.json",
+    "section": "mda",
+    "notes": "Verified from actual file quote: 'Greater China net sales decreased during 2024 compared to 2023 due primarily to lower net sales of iPhone and iPad. The weakness in the renminbi relative to the U.S. dollar had an unfavorable year-over-year impact on Greater China net sales during 2024.'"
+  },
+  {
+    "id": "A07",
+    "category": "analytical",
+    "question": "How did Apple's gross margin change between fiscal year 2023 and fiscal year 2024, and what drove the improvement?",
+    "expected_answer": "Gross margin improved from 44.1% in FY2023 to 46.2% in FY2024. Products gross margin increased from 36.5% to 37.2%, and Services gross margin improved from 70.8% to 73.9%. The overall improvement reflects both Services becoming a larger share of revenue and improved margins in both segments.",
+    "source": "AAPL/10-K/2024-09-28.json",
+    "section": "mda",
+    "notes": "All figures verified from actual files. Services has higher margins than Products, so the growing Services mix structurally lifts the blended margin."
+  },
+  {
+    "id": "A08",
+    "category": "analytical",
+    "question": "What U.S. government export controls did NVIDIA disclose in its fiscal year 2024 annual report, and how did they affect China revenue?",
+    "expected_answer": "NVIDIA disclosed that during Q3 FY2023 the USG announced licensing requirements for exports of A100 and H100 chips to China. In October 2023 (effective in Q4 FY2024) new restrictions were added covering A100, A800, H100, H800, L4, L40, L40S and RTX 4090. As a result, China's share of Data Center revenue fell from 19% in FY2023 to 14% in FY2024, and further to a mid-single digit percentage in Q4 FY2024.",
+    "source": "NVDA/10-K/2024-01-28.json",
+    "section": "mda",
+    "notes": "Key quotes verified from actual file including specific chip model names and the 19%-to-14% percentage drop. Tests retrieval from global trade/MDA narrative section."
+  },
+  {
+    "id": "A09",
+    "category": "analytical",
+    "question": "What drove NVIDIA's revenue growth in the third quarter of fiscal year 2025 (quarter ended October 27, 2024), and what was the status of the Blackwell architecture?",
+    "expected_answer": "Growth was driven by data center compute and networking for accelerated computing and AI. Demand for Hopper architecture remained strong and the H200 offering grew significantly. For Blackwell, NVIDIA completed a successful mask change that improved production yields, with production shipments scheduled to begin in Q4 FY2025 and demand expected to exceed supply for several quarters in FY2026.",
+    "source": "NVDA/10-Q/2024-10-27.json",
+    "section": "mda",
+    "notes": "Key quotes verified from actual file. Tests retrieval of Blackwell architecture status and transition narrative alongside Hopper demand discussion."
+  },
+  {
+    "id": "A10",
+    "category": "analytical",
+    "question": "What did Apple say drove Services revenue growth in Q1 fiscal year 2025 (quarter ended December 28, 2024)?",
+    "expected_answer": "Higher net sales from advertising, the App Store, and cloud services. Services revenue grew 14% year-over-year to $26.3 billion, and Services gross margin improved from 72.8% to 75.0%.",
+    "source": "AAPL/10-Q/2024-12-28.json",
+    "section": "mda",
+    "notes": "Verified quote: 'Services net sales increased during the first quarter of 2025 compared to the same quarter in 2024 due primarily to higher net sales from advertising, the App Store and cloud services.'"
+  },
+  {
+    "id": "A11",
+    "category": "analytical",
+    "question": "What supply chain concentration risks did Apple disclose in its fiscal year 2024 annual report?",
+    "expected_answer": "Apple disclosed that substantially all manufacturing is performed by outsourcing partners located primarily in China mainland, India, Japan, South Korea, Taiwan, and Vietnam, with a significant concentration in a small number of outsourcing partners often in single locations. Apple noted this diminished control can adversely affect quality or quantity of products manufactured.",
+    "source": "AAPL/10-K/2024-09-28.json",
+    "section": "risk_factors",
+    "notes": "Verified from actual file. Key quote: 'Substantially all of the Company's manufacturing is performed in whole or in part by outsourcing partners located primarily in China mainland, India, Japan, South Korea, Taiwan and Vietnam, and a significant concentration of this manufacturing is currently performed by a small number of outsourcing partners, often in single locations.'"
+  },
+  {
+    "id": "C01",
+    "category": "cross_company",
+    "question": "Which company — Microsoft, Alphabet, or Meta — spent the highest percentage of revenue on R&D in fiscal year 2023?",
+    "expected_answer": "Meta spent the highest at approximately 28.5% ($38,483M of $134,902M). Alphabet was approximately 14.8% ($45,427M of $307,394M). Microsoft was approximately 12.8% ($27,195M of $211,915M).",
+    "source": "META/10-K/2023-12-31.json, GOOGL/10-K/2023-12-31.json, MSFT/10-K/2023-06-30.json",
+    "section": "income_statement",
+    "notes": "All R&D and revenue figures from income statements."
+  },
+  {
+    "id": "C02",
+    "category": "cross_company",
+    "question": "How did Alphabet's employee count change from the end of 2022 to the end of 2023?",
+    "expected_answer": "Alphabet reduced its workforce from 190,234 employees at December 31, 2022 to 182,502 employees at December 31, 2023 — a reduction of approximately 7,732 employees or about 4%",
+    "source": "GOOGL/10-K/2022-12-31.json, GOOGL/10-K/2023-12-31.json",
+    "section": "mda",
+    "notes": "Requires comparing two separate 10-K filings for the same company across consecutive years."
+  },
+  {
+    "id": "C03",
+    "category": "cross_company",
+    "question": "Comparing Apple (fiscal year ending September 2024) and NVIDIA (fiscal year ending January 2024), which company had the higher gross margin percentage?",
+    "expected_answer": "NVIDIA had a significantly higher gross margin at 72.7%, compared to Apple's 46.2%. Both figures are verified from the respective 10-K filings.",
+    "source": "AAPL/10-K/2024-09-28.json, NVDA/10-K/2024-01-28.json",
+    "section": "income_statement",
+    "notes": "Verified from actual files. Tests cross-company margin comparison with explicit period disambiguation to avoid fiscal year confusion."
+  },
+  {
+    "id": "C04",
+    "category": "cross_company",
+    "question": "How did NVIDIA's revenue growth rate from FY2023 to FY2024 (both ending in January) compare to Apple's revenue growth from FY2023 to FY2024 (both ending in September)?",
+    "expected_answer": "NVIDIA grew 125% from approximately $27B to $60.9B, driven by AI and data center demand. Apple grew approximately 2% from $383.3B to $391.0B. NVIDIA's growth rate was roughly 60x higher on a percentage basis.",
+    "source": "NVDA/10-K/2024-01-28.json, AAPL/10-K/2024-09-28.json",
+    "section": "mda",
+    "notes": "Verified from actual files. Tests multi-company retrieval with explicit fiscal year disambiguation."
+  },
+  {
+    "id": "C05",
+    "category": "cross_company",
+    "question": "Which company reported higher net income: Apple in its fiscal year 2024 (ending September 28, 2024) or NVIDIA in its fiscal year 2025 (ending January 26, 2025)?",
+    "expected_answer": "Apple reported higher net income at $93.7 billion in FY2024 versus NVIDIA's $72.9 billion in FY2025. Both are verified from the respective 10-K filings.",
+    "source": "AAPL/10-K/2024-09-28.json, NVDA/10-K/2025-01-26.json",
+    "section": "income_statement",
+    "notes": "Verified from actual files. Tests that the system retrieves net income from the correct fiscal year for each company."
+  },
+  {
+    "id": "U01",
+    "category": "unanswerable",
+    "question": "What was Meta's revenue in fiscal year 2019?",
+    "expected_answer": "REFUSE — outside our data range (only have 2022-2025 filings)",
+    "source": null,
+    "notes": "Our corpus starts at 2022. The system should refuse rather than guess."
+  },
+  {
+    "id": "U02",
+    "category": "unanswerable",
+    "question": "What is the monthly subscription price for Microsoft Copilot?",
+    "expected_answer": "REFUSE — product pricing is not disclosed in SEC filings",
+    "source": null,
+    "notes": "SEC filings report financial results, not individual product prices."
+  },
+  {
+    "id": "U03",
+    "category": "unanswerable",
+    "question": "How does Amazon Web Services revenue compare to Microsoft Azure?",
+    "expected_answer": "REFUSE — Amazon is not in our corpus",
+    "source": null,
+    "notes": "Only AAPL, GOOGL, META, MSFT, NVDA are indexed. Cannot compare AWS."
+  },
+  {
+    "id": "U04",
+    "category": "unanswerable",
+    "question": "What was Tesla's total revenue in fiscal year 2023?",
+    "expected_answer": "REFUSE — Tesla is not in the indexed corpus",
+    "source": null,
+    "notes": "Tesla filings are not indexed. The system should explicitly state Tesla is not available."
+  },
+  {
+    "id": "U05",
+    "category": "unanswerable",
+    "question": "What is Apple's stock price as of January 1, 2024?",
+    "expected_answer": "REFUSE — stock market prices are not reported in SEC filings",
+    "source": null,
+    "notes": "Market prices are not in 10-K or 10-Q filings. The system should refuse to answer."
+  },
+  {
+    "id": "U06",
+    "category": "unanswerable",
+    "question": "How did Google's advertising revenue compare to Amazon's advertising revenue in 2023?",
+    "expected_answer": "REFUSE or partial — can only answer for Alphabet/Google; Amazon is not in the corpus",
+    "source": null,
+    "notes": "Only GOOGL is indexed of the two. System should either fully refuse or clearly caveat that Amazon data is unavailable."
+  },
+  {
+    "id": "U07",
+    "category": "unanswerable",
+    "question": "What is the customer churn rate for Microsoft Azure subscriptions in fiscal year 2024?",
+    "expected_answer": "REFUSE — customer churn rates are not disclosed in Microsoft's SEC filings",
+    "source": null,
+    "notes": "Churn rate is a common SaaS KPI but is not a disclosed metric in Microsoft's 10-K. System should state this is not available."
+  },
+  {
+    "id": "U08",
+    "category": "unanswerable",
+    "question": "What is Apple's projected total net sales for fiscal year 2026?",
+    "expected_answer": "REFUSE — Apple does not provide specific forward revenue guidance in SEC filings",
+    "source": null,
+    "notes": "Apple's SEC filings contain risk factors and forward-looking cautionary language but do not state a specific revenue figure for a future year. The system should not fabricate guidance."
+  }
+]

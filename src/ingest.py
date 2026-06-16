@@ -6,20 +6,10 @@ from edgar import Company, set_identity
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-FILING_CONFIG = {
-    "10-K": 4,
-    "10-Q": 12,
-}
+FORM_TYPES = ["10-K", "10-Q"]
 
-COMPANIES_FILE = Path(__file__).parent.parent / "data" / "companies.json"
 OUTPUT_DIR = Path(__file__).parent.parent / "data" / "sec-filings"
 EMAIL = "CustomerInsightsProject carlos3212345@gmail.com"
-
-
-def load_companies() -> dict:
-    if not COMPANIES_FILE.exists():
-        return {}
-    return json.loads(COMPANIES_FILE.read_text(encoding="utf-8"))
 
 
 def filing_path(ticker: str, form_type: str, period: str) -> Path:
@@ -27,64 +17,32 @@ def filing_path(ticker: str, form_type: str, period: str) -> Path:
     return OUTPUT_DIR / ticker / form_type / f"{period}.json"
 
 
-def fetch_company(ticker: str, start_year: int | None = None, filing_config: dict | None = None) -> None:
+def fetch_company(ticker: str, start_year: int) -> None:
     """
-    Download and save filings for a single ticker.
-    start_year: if set, fetch all filings from that year onward (overrides count limits).
+    Download and save all 10-K and 10-Q filings for a ticker from start_year onward.
     """
-    if filing_config is None:
-        filing_config = FILING_CONFIG
     set_identity(EMAIL)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    for form_type, limit in filing_config.items():
-        logger.info(f"Fetching {form_type} for {ticker} (start_year={start_year or 'recent'})...")
+    for form_type in FORM_TYPES:
+        logger.info(f"Fetching {form_type} for {ticker} (from {start_year})...")
         try:
-            _fetch_filings(ticker, form_type, limit, start_year=start_year)
+            _fetch_filings(ticker, form_type, start_year)
         except Exception as e:
             logger.error(f"  Failed {ticker} {form_type}: {e}")
 
 
-def fetch_all(tickers: list[str] | None = None) -> None:
-    """Fetch filings for all registered companies, or a specific list of tickers."""
-    if tickers is None:
-        companies = load_companies()
-        tickers = list(companies.keys())
-
-    if not tickers:
-        logger.warning("No companies registered. Add companies to data/companies.json first.")
-        return
-
-    set_identity(EMAIL)
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
-    for ticker in tickers:
-        for form_type, limit in FILING_CONFIG.items():
-            logger.info(f"Fetching {limit}x {form_type} for {ticker}...")
-            try:
-                _fetch_filings(ticker, form_type, limit)
-            except Exception as e:
-                logger.error(f"  Failed {ticker} {form_type}: {e}")
-
-    logger.info(f"\nDone. Files saved to: {OUTPUT_DIR}")
-    _print_summary(tickers)
-
-
-def _fetch_filings(ticker: str, form_type: str, limit: int, start_year: int | None = None) -> None:
+def _fetch_filings(ticker: str, form_type: str, start_year: int) -> None:
     company = Company(ticker)
-    # When fetching by year range, use a generous cap so we don't miss older filings.
-    # edgartools returns filings newest-first, so we break early once past start_year.
-    if start_year is None:
-        filings = company.get_filings(form=form_type).head(limit)
-    else:
-        max_historical = 50 if form_type == "10-K" else 200
-        filings = company.get_filings(form=form_type).head(max_historical)
+    # edgartools returns filings newest-first; cap generously and break once past start_year.
+    max_historical = 50 if form_type == "10-K" else 200
+    filings = company.get_filings(form=form_type).head(max_historical)
 
     for filing in filings:
         try:
             obj = filing.obj()
             period = str(obj.period_of_report)
 
-            if start_year is not None and int(period[:4]) < start_year:
+            if int(period[:4]) < start_year:
                 break  # Filings are newest-first; everything past here is older
 
             out_path = filing_path(ticker, form_type, period)
@@ -141,17 +99,3 @@ def _extract_sections(obj, form_type: str) -> dict:
             sections[key] = ""
 
     return sections
-
-
-def _print_summary(tickers: list[str]) -> None:
-    files = list(OUTPUT_DIR.glob("**/*.json"))
-    logger.info(f"\n--- Summary: {len(files)} total filings ---")
-    for ticker in tickers:
-        for form_type in FILING_CONFIG:
-            folder = OUTPUT_DIR / ticker / form_type
-            count = len(list(folder.glob("*.json"))) if folder.exists() else 0
-            logger.info(f"  {ticker} {form_type}: {count} filings")
-
-
-if __name__ == "__main__":
-    fetch_all()

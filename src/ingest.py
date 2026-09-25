@@ -45,6 +45,7 @@ def _fetch_filings(ticker: str, form_type: str, start_year: int) -> None:
             if int(period[:4]) < start_year:
                 break  # Filings are newest-first; everything past here is older
 
+            # Puts data called from API and puts it in this directory
             out_path = filing_path(ticker, form_type, period)
 
             if out_path.exists():
@@ -67,7 +68,9 @@ def _fetch_filings(ticker: str, form_type: str, start_year: int) -> None:
         except Exception as e:
             logger.warning(f"  Could not parse {filing.accession_no}: {e}")
 
-
+# Just found out that this function is not extracting all contents of SEC files
+# We may want to extract all contents instead of just financial sections
+# Could implement this later on
 def _extract_sections(obj, form_type: str) -> dict:
     sections = {}
 

@@ -84,7 +84,7 @@ class RAGPipeline:
         self,
         question: str,
         ticker: str | None = None,
-        k: int = 10,
+        k: int = 10, # how many chunks/passages to retrieve and hand to the LLM as context, picks the top 10 relevant chunks to answer question
         sections: list[str] | None = None,
         period: str | None = None,
         form_type: str | None = None,

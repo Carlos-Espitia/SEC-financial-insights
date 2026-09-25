@@ -9,7 +9,7 @@ import chromadb
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+EMBEDDING_MODEL = "all-MiniLM-L6-v2" # Look for other embedding options not sure if this is the best embedding model for our use case
 COLLECTION_NAME = "sec_filings"
 CHUNK_SIZE = 1200     # chars — keeps chunks within the embedding model's token limit
 CHUNK_OVERLAP = 150   # chars — prevents context loss at boundaries
@@ -19,6 +19,8 @@ CHROMA_DIR = Path(__file__).parent.parent / "data" / "index"
 
 
 def build_index() -> None:
+    
+    # Used to split text for chunking
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=CHUNK_SIZE,
         chunk_overlap=CHUNK_OVERLAP,
@@ -26,15 +28,22 @@ def build_index() -> None:
     )
 
     logger.info(f"Loading embedding model: {EMBEDDING_MODEL}")
+
+    # Turns a chunk of words into a chunk of vectors, multiple words per token, 1 token = 1 vector
+    # https://www.youtube.com/watch?v=wgfSDrqYMJ4
     embedder = SentenceTransformer(EMBEDDING_MODEL)
 
-    client = chromadb.PersistentClient(path=str(CHROMA_DIR))
+    # Vectors/embeddings are stored in the CHROMA_DIR directory
+    client = chromadb.PersistentClient(path=str(CHROMA_DIR)) # ChromaDB client
+
+    # Collection we are storing all our SEC files information
     collection = client.get_or_create_collection(
         name=COLLECTION_NAME,
         metadata={"hnsw:space": "cosine"},
     )
 
-    json_files = sorted(DATA_DIR.glob("**/*.json"))
+    json_files = sorted(DATA_DIR.glob("**/*.json")) # Returns a list of all SEC json files
+
     logger.info(f"Found {len(json_files)} filings to process")
 
     total_chunks = 0
@@ -52,7 +61,7 @@ def _process_filing(
     embedder: SentenceTransformer,
     collection,
 ) -> int:
-    data = json.loads(json_file.read_text(encoding="utf-8"))
+    data = json.loads(json_file.read_text(encoding="utf-8")) # Gets contents of SEC JSON file 
 
     ticker = data["ticker"]
     form_type = data["form_type"]
@@ -75,6 +84,7 @@ def _process_filing(
         if not chunks:
             continue
 
+        # This is when chunks of words are converted into vectors. 
         embeddings = embedder.encode(chunks, show_progress_bar=False).tolist()
 
         ids = [f"{source_id}__{section_name}__{i}" for i in range(len(chunks))]
@@ -92,6 +102,7 @@ def _process_filing(
             for _ in chunks
         ]
 
+        # Adds the embeddings/vectors into collection
         collection.add(ids=ids, embeddings=embeddings, documents=chunks, metadatas=metadatas)
         chunks_added += len(chunks)
 
